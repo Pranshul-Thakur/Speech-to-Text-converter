@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bitmappers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #3498db;
+            color: white;
+            padding: 20px 0;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #3498db;
+            color: white;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #recognizedText {
+            margin-top: 20px;
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bitmappers</h1>
+    </header>
+    <div class="container">
+        <h2>Speech to Text</h2>
+        <p>Click the "Start Listening" button and speak into your microphone. The recognized text will appear below.</p>
+        <button id="startButton">Start Listening</button>
+        <button id="stopButton" disabled>Stop Listening</button>
+        <div id="recognizedText"></div>
+        <button id="saveButton" disabled>Save Text</button>
+
+    </div>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const recognizedText = document.getElementById('recognizedText');
+        let recognition;
+
+        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            
+            recognition.onstart = () => {
+                startButton.textContent = 'Listening...';
+                stopButton.disabled = false;
+            };
+            
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+                
+                for (const result of event.results) {
+                    if (result.isFinal) {
+                        finalTranscript += result[0].transcript;
+                    } else {
+                        interimTranscript += result[0].transcript;
+                    }
+                }
+                
+                recognizedText.innerHTML = `<strong></strong> ${interimTranscript}<br><strong>Final:</strong> ${finalTranscript}`;
+            };
+            
+            recognition.onend = () => {
+                startButton.textContent = 'Start Listening';
+                stopButton.disabled = true;
+            };
+            
+            startButton.addEventListener('click', () => {
+                if (recognition && recognition.start) {
+                    recognition.start();
+                }
+            });
+            
+            stopButton.addEventListener('click', () => {
+                if (recognition && recognition.stop) {
+                    recognition.stop();
+                }
+            });
+        } else {
+            console.log('SpeechRecognition API is not supported by this browser.');
+        }
+        
+const saveButton = document.getElementById('saveButton');
+let savedText = ''; 
+
+recognition.onresult = (event) => {
+    let interimTranscript = '';
+    let finalTranscript = '';
+    
+    for (const result of event.results) {
+        if (result.isFinal) {
+            finalTranscript += result[0].transcript;
+        } else {
+            interimTranscript += result[0].transcript;
+        }
+    }
+    
+    recognizedText.innerHTML = `<strong></strong> ${interimTranscript}<br><strong>Final:</strong> ${finalTranscript}`;
+    
+    
+    if (finalTranscript.trim() !== '') {
+        saveButton.disabled = false;
+    } else {
+        saveButton.disabled = true;
+    }
+
+    
+    savedText = finalTranscript;
+};
+
+
+saveButton.addEventListener('click', () => {
+    if (savedText) {
+        
+        console.log('Saved Text:', savedText);
+    }
+    stopButton.addEventListener('click', () => {
+                recognition.stop();
+            });
+
+            saveButton.addEventListener('click', () => {
+                const textToSave = recognizedText.textContent;
+                downloadTextAsFile(textToSave, 'recognized_text.txt');
+            });
+        // } else {
+        //     console.log('SpeechRecognition API is not supported by this browser.');
+        // }
+
+        function downloadTextAsFile(text, filename) {
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+});
+
+    </script>
+</body>
+</html>
