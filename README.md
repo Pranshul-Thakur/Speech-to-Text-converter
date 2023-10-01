@@ -10,12 +10,6 @@ The Browser-Based Speech-to-Text Converter is an innovative and versatile tool t
 
 **Customization Options for languages**
 
-![Uploading Screenshot 2023-09-30 115755.png…]()
-
-
-
-
-
-
+![Screenshot 2023-09-30 115755](https://github.com/Pranshul-Thakur/Speech-to-Text-converter/assets/118863617/5ccd4574-e5b2-44f4-84d4-c4f78717ca20)
 
 Additionally : the olderver.htm is the older version of the current model
