@@ -10,4 +10,12 @@ The Browser-Based Speech-to-Text Converter is an innovative and versatile tool t
 
 **Customization Options for languages**
 
+![Uploading Screenshot 2023-09-30 114408.png…]()
+
+
+
+
+
+
+
 Additionally : the olderver.htm is the older version of the current model
